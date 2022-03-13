@@ -150,8 +150,7 @@ class hypergraph(object):
 
     
     def random_walk(self,length,size,**kwargs):
-        """Generating a sequence of random walks starting from the last column
-        of the vertex weight matrix
+        """Generating a sequence of random walks over the hypergraph
 
         Input argument block_types specifies type of the "column blocks" in the vertex
         matrix, with format ((B1,n1), (B2,n2),...), where Bi and ni are the i-th block and
@@ -288,7 +287,7 @@ def random_walk_for_hypergraph(R,
 
     if Rcsr is None:
         Rcsr = R.tocsr()
-        
+
     v = start_idx
     for i in range(length-1):
 
@@ -374,89 +373,6 @@ def compute_multistep_transprob(P, source_inds, dest_inds, **kwargs):
         for t in range(1,nstep-2):
             left_mat = left_mat * interm_subP
         return left_mat * dest_subP[interm_inds,:]
-
-
-def node_weighting_alpha(data, alpha, block_types):
-    """Giving weights to existing nodes in a hyperedge  such that
-    the probabiliy of choosing chemical nodes is alpha times the
-    probability of choosing an author node in each random walk step
-
-    *Parameters*:
-
-    ** data: array
-       one row of the vertex matri
-
-    ** alpha: scalar
-       P(sampling from entities) / P(sampling from authors)
-
-    ** block_types: dict
-       types and size of each block of columns in the vertex matrix (here,
-       it should have only two types with keys `authors` and `entity`
-    """
-
-    assert len(block_types)==2, "node-weighting with alpha should be used " \
-        "only with two types of vertex nodes, here we have {}".format(len(block_types))
-    
-    nA = block_types['author']
-    nE = block_types['entity']
-    
-    A = np.sum(data[:nA]) + data[-1]  # assume data[-1]=KW
-    E = np.sum(data[nA:nA+nE])
-    if A>0 and E>0:
-        data[:nA] = data[:nA] / ((alpha+1)*A)
-        data[-1] = data[-1] / ((alpha+1)*A)
-        data[nA:nA+nE] = alpha*data[nA:nA+nE] /  ((alpha+1)*E)
-    elif A>0 and E==0:
-        data[:nA] = data[:nA]/A
-    elif A==0 and E>0:
-        data[nA:nA+nE] = data[nA:nA+nE]/E
-        
-    return data
-
-    
-def node_weighting_ent(data, block_types):
-    """Weighting nodes such that only materials are sampled; if there is
-    no materials among the nodes, an all-zero vector will be returned 
-    (i.e., random walk will be terminated)
-
-    *Paramters*:
-
-    ** data: array
-       one row of the vertex matri
-
-    ** block_types: dict
-       types and size of each block of columns in the vertex matrix
-
-    """
-
-    nA = block_types['author']
-    data[:nA] = 0
-    if np.any(data>0):
-        data = data/np.sum(data)
-
-    return data
-
-
-def node_weighting_author(data, block_types):
-    """Giving zero sampling weights to non-authors, hence
-    leading to a random walk that only walks over author nodes
-
-    *Paramters*:
-
-    ** data: array
-       one row of the vertex matri
-
-    ** block_types: dict
-       types and size of each block of columns in the vertex matrix
-    """
-
-    nA = block_types['author']
-    data[nA:] = 0
-    if np.any(data>0):
-        data = data/np.sum(data)
-        
-    return data
-
 
 
 def node2vec_sample_edge(R, curr_idx, prev_idx, q, randgen):
