@@ -276,10 +276,8 @@ def random_walk_for_hypergraph(R,
         print("Non-lazy random walk cannot start from an isolated vertex.")
         return None
 
-    if rand_seed is not None:
-        randgen = np.random.RandomState(rand_seed).random
-    else:
-        randgen = np.random.sample
+    np.random.seed(rand_seed)
+    randgen = np.random.sample
 
     if node2vec_q is not None:
         q = node2vec_q
