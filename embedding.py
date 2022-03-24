@@ -18,11 +18,9 @@ from gensim.models.word2vec import LineSentence
 from gensim.models.callbacks import CallbackAny2Vec
 from gensim.models.phrases import Phrases, Phraser
 
-path = '/home/jamshid/codes/accelerate-discoveries'
-sys.path.insert(0,path)
 import utils
 
-DEFAULT_PARS_PATH = '/home/jamshid/codes/accelerate-discoveries/default_params.json'
+DEFAULT_PARS_PATH = os.path.join(os.path.dirname(__file__), "default_params.json")
 with open(DEFAULT_PARS_PATH, 'r') as f:
     DEFAULT_PARS = json.load(f)
 exclude_terms = [":", "=", ".", ",", "(", ")", "<", ">", "\"", "“", "”", "≥", "≤", "<nUm>"]
