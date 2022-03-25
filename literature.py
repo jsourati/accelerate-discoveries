@@ -35,6 +35,17 @@ class hypergraph(object):
             
     def get_csr_mat(self):
         self.Rcsr = self.R.tocsr()
+
+        
+    def node_to_type(self,idx):
+        if idx < self.nA:
+            return 'author'
+        elif self.nA <= idx < self.nA+self.nM:
+            return 'material'
+        elif self.nA+self.nM <= idx < self.nA+self.nM+self.nP:
+            return 'property'
+        else:
+            raise ValueError('Index not in a valid range.')
             
             
     def find_neighbors(self, idx, return_names=False):
