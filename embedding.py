@@ -66,9 +66,8 @@ class dww2v(object):
                                                            self.pars['phrase_min_count'],
                                                            self.pars['phrase_threshold'])
 
-        # build the embedding model        
-        self.model = Word2Vec(self.sentences,
-                              size=self.pars['size'],
+        # build the embedding model
+        self.model = Word2Vec(vector_size=self.pars['size'],
                               window=self.pars['window'],
                               min_count=self.pars['min_count'],
                               sg=self.pars['sg'],
@@ -80,8 +79,11 @@ class dww2v(object):
                               compute_loss=True,
                               sorted_vocab=True,
                               batch_words=self.pars['batch'],
-                              iter=0   # this will be "epochs" in newer versions
+                              epochs=1
                               )
+        
+        # build the vocabulary
+        self.model.build_vocab(self.sentences)
 
         
 
