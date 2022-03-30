@@ -32,7 +32,7 @@ def cosine_sims(model, tokens_A, token_B, type='embed_out'):
         output embedding used in heirarchical softmax
     """
 
-    if token_B not in model.wv.vocab:
+    if token_B not in model.wv:
         raise NameError("{} is not in the model's vocabulary.".format(token_B))
 
     # embedding vector of B --> hidden weights
@@ -42,13 +42,13 @@ def cosine_sims(model, tokens_A, token_B, type='embed_out'):
     sims = np.ones(len(tokens_A))
     for i,tok in enumerate(tokens_A):
         # if a token is not in the vocabulary --> sim.=NaN
-        if tok not in model.wv.vocab:
+        if tok not in model.wv:
             sims[i] = np.nan
             continue
 
-        idx = model.wv.vocab[tok].index
+        idx = model.wv.key_to_index[tok]
         if type=='embed_out':
-            zo_x = model.trainables.syn1neg[idx,:]
+            zo_x = model.syn1neg[idx,:]
         elif type=='embed_embed':
             zo_x = model.wv[tok]
             
@@ -66,8 +66,8 @@ def props_stats(model, props):
         cnt = {}
         for val in props[prop]:
             tok = '{}/{}'.format(prop.replace(' ','__'),val.replace(' ','__'))
-            if tok in model.wv.vocab:
-                cnt[val] = model.wv.vocab[tok].count
+            if tok in model.wv:
+                cnt[val] = model.wv.get_vecattr(tok, "count")
             else:
                 cnt[val] = 0
 
