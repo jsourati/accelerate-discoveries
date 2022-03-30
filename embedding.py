@@ -9,10 +9,6 @@ from tqdm import tqdm
 from scipy import sparse
 from collections import Counter
 
-from sklearn.metrics.pairwise import cosine_similarity
-from sklearn.preprocessing import PolynomialFeatures
-from sklearn.linear_model import LogisticRegressionCV
-
 from gensim.models import Word2Vec
 from gensim.models.word2vec import LineSentence
 from gensim.models.callbacks import CallbackAny2Vec
@@ -27,12 +23,11 @@ exclude_terms = [":", "=", ".", ",", "(", ")", "<", ">", "\"", "“", "”", "�
 
 
 class dww2v(object):
-    '''Class of Word2Vec embedding function that is mostly suitable for learning
+    """Class of Word2Vec embedding function that is mostly suitable for learning
     embedding from random walk sequences (within a deepwalk framework)
-    '''
+    """
 
     def __init__(self, path_to_data, **kwargs):
-
 
         self.path_to_data = path_to_data
         self.pars = {}
@@ -43,13 +38,19 @@ class dww2v(object):
         logger_disable = kwargs.get('logger_disable', False)
         self.logfile_path =   kwargs.get('logfile_path', None)
         self.logger = utils.set_up_logger(__name__, self.logfile_path, logger_disable)
-
+        
         
     def load_model(self, path):
         self.model = Word2Vec.load(path)
 
         
+    def save_model(self,path):
+        self.model.save(path)
+
+        
     def build_model(self, phrasing=True):
+        """Building a model by initializing it and creating its vocabulary
+        """
 
         self.logger.info('Parsing lines (sentences) in: {}: '.format(self.path_to_data))
         self.logger.info('Parameters for parsing phrases are as follows:')
@@ -104,18 +105,12 @@ class dww2v(object):
                          epochs=self.pars['epochs'],
                          compute_loss=True,
                          callbacks=callbacks)
-
-        
-    def most_similar_props(self, token, prop=None):
-        '''Finding the most similar properties to a given token
-        '''
-        pass
         
 
 
 def extract_phrases(sent, depth, min_count, threshold, level=0):
-    '''Extracting phrases from the corpus (inspired by `mat2vec.training.phrase2vec.wordgrams`)
-    '''
+    """Extracting phrases from the corpus (inspired by `mat2vec.training.phrase2vec.wordgrams`)
+    """
     
     if depth == 0:
         return sent, None
