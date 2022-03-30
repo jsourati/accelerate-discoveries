@@ -23,8 +23,8 @@ class hypergraph(object):
         '''
         
         self.R = R
-        self.mats = mats
-        self.props = props
+        self.mats = np.array(mats)
+        self.props = np.array(props)
         self.nM = len(mats)
         self.nP = len(props)
         self.nA = R.shape[1] - self.nM - self.nP
