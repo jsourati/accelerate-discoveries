@@ -96,3 +96,15 @@ def infer_props(model, mat, props):
             infers[prop] = np.nan
 
     return scores,infers
+
+def infer_elements(model, token, elements):
+    """Inferring elements in regards with a given token through a trained model
+    """
+
+    model_elements = np.array([x for x in elements if x in model.wv.vocab])
+    sims = cosine_sims(model, model_elements, token)
+    out_elements = model_elements[np.argsort(-sims)]
+    out_sims = sims[np.argsort(-sims)]
+
+    return out_elements, out_sims
+    
