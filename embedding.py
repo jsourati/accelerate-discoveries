@@ -14,7 +14,7 @@ from gensim.models.word2vec import LineSentence
 from gensim.models.callbacks import CallbackAny2Vec
 from gensim.models.phrases import Phrases, Phraser
 
-import utils
+import utils, evaluation
 
 DEFAULT_PARS_PATH = os.path.join(os.path.dirname(__file__), "default_params.json")
 with open(DEFAULT_PARS_PATH, 'r') as f:
@@ -105,7 +105,31 @@ class dww2v(object):
                          epochs=self.pars['epochs'],
                          compute_loss=True,
                          callbacks=callbacks)
+
+
+    def similarities(self, tokens_1, tokens_2, return_nan=True):
+        """Computing pairwise similarities between tokens of two given lists
+        """
         
+        if return_nan:
+            sims = np.zeros((len(tokens_1), len(tokens_2)))
+            for i,tok in enumerate(tokens_1):
+                sims[i,:] = evaluation.cosine_sims(self.model, tokens_2, tok)
+
+            return sims
+
+        else:
+            tokens_1_nonan = [x for x in tokens_1 if x in self.model.wv]
+            tokens_2_nonan = [x for x in tokens_1 if x in self.model.wv]
+
+            if (len(tokens_1_nonan)==0) or (len(tokens_2_nonan)==0):
+                return None
+            
+            sims = np.zeros((len(tokens_1_nonan), len(tokens_2_nonan)))
+            for i,tok in enumerate(tokens_1_nonan):
+                sims[i,:] = evaluation.cosine_sims(self.model, tokens_2, tok)
+
+            return sims, tokens_1_nonan, tokens_2_nonan
 
 
 def extract_phrases(sent, depth, min_count, threshold, level=0):
