@@ -1,0 +1,8 @@
+gensim==3.8.0
+joblib==1.1.0
+networkx==2.7.1
+numpy==1.21.2
+PyMySQL==0.9.3
+regex==2022.3.2
+scipy==1.7.3
+tqdm==4.63.0
