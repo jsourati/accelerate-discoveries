@@ -66,7 +66,7 @@ class dww2v(object):
                                                            self.pars['phrase_min_count'],
                                                            self.pars['phrase_threshold'])
 
-        # build the embedding model        
+        # build the embedding model
         self.model = Word2Vec(self.sentences,
                               size=self.pars['size'],
                               window=self.pars['window'],
@@ -119,15 +119,15 @@ class dww2v(object):
             return sims
 
         else:
-            tokens_1_nonan = [x for x in tokens_1 if x in self.model.wv]
-            tokens_2_nonan = [x for x in tokens_1 if x in self.model.wv]
+            tokens_1_nonan = np.array([x for x in tokens_1 if x in self.model.wv])
+            tokens_2_nonan = np.array([x for x in tokens_2 if x in self.model.wv])
 
             if (len(tokens_1_nonan)==0) or (len(tokens_2_nonan)==0):
                 return None
             
             sims = np.zeros((len(tokens_1_nonan), len(tokens_2_nonan)))
             for i,tok in enumerate(tokens_1_nonan):
-                sims[i,:] = evaluation.cosine_sims(self.model, tokens_2, tok)
+                sims[i,:] = evaluation.cosine_sims(self.model, tokens_2_nonan, tok)
 
             return sims, tokens_1_nonan, tokens_2_nonan
 
