@@ -84,10 +84,21 @@ Once the training is done, the word embedding model will be accessible through `
 ### Inferring Materials with the Targeted Property
 The trained word embedding models will be used to rank the candidate materials based on their similarity to the property (in this example, thermoelectricity). 
 ```
-sims,_,reordered_mats = embed2.similarities(['thermoelectric'], mats, return_nan=False)
+sims,_,reordered_mats = embed.similarities(['thermoelectric'], mats, return_nan=False)
 ```
-We can report a number of materials with the highest similarities to the property as predicted materials:
+
+**NOTE FOR ELECTROCHEMICAL PROPERTIES:** Above command computes similarity between *all* materials and the property. However, when working with electrochemical properties (e.g., thermoelectricity), first we have to discard materials that have been already co-occurred (i.e., studied) with the targeted property. For instance, for prediction year 2001, we'll have:
 ```
+full_R = sparse.load_npz("data/thrm_vertex_matrix.npz")
+subgraph_R = full_R[yrs<2000]
+studied_mats = mats[np.asarray(np.sum(subgraph_R[:,h.nA:-1].multiply(subgraph_R[:,-1]), axis=0)>0)[0,:]]
+candidate_mats = mats[~np.isin(mats,studied_mats)]
+```
+
+The prediction will be done over these candidate materials:
+```
+sims,_,reordered_mats = embed.similarities(['thermoelectric'], candidate_mats, return_nan=False)
+
 # reporting 50 materials with highest likelihood of being thermoelectric
-reordered_mats[np.argsort(-sims)][:50]
+reordered_mats[np.argsort(-sims[0,:])][:50]
 ```
