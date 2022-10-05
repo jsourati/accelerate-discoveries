@@ -10,7 +10,7 @@ A few data files have been stored within `data/` to enable generating and evalua
 * `data/*_groundtruth_discs.json`: ground-truth discoveries made by scientists in reality, which are grouped by months (for COVID-19) and years (for thermoelectricity)
 * `data/*_model_*`: pre-trained word2vec sample model to be used for generating predictions
 
-## An Example
+## An Example (Thermoelectricity)
 Data necessary for running our expert-aware discovery prediction algorithm on an example property, i.e., "thermoelectricity", is included in `data/`. 
 Here are the main steps:
 
@@ -100,7 +100,7 @@ sims,_,reordered_mats = embed.similarities(['thermoelectric'], mats, return_nan=
 **NOTE FOR ELECTROCHEMICAL PROPERTIES:** Above command computes similarity between *all* materials and the property. However, when working with electrochemical properties (e.g., thermoelectricity), first we have to discard materials that have been already co-occurred (i.e., studied) with the targeted property. For instance, for prediction year 2001, we'll have:
 ```
 full_R = sparse.load_npz("data/thrm_vertex_matrix.npz")
-subgraph_R = full_R[yrs<2000]
+subgraph_R = full_R[yrs<=2000]
 studied_mats = mats[np.asarray(np.sum(subgraph_R[:,h.nA:-1].multiply(subgraph_R[:,-1]), axis=0)>0)[0,:]]
 candidate_mats = mats[~np.isin(mats,studied_mats)]
 ```
@@ -118,7 +118,7 @@ The evaluation will be done based on the ground-truth discoveries saved as `data
 ```
 import json
 
-gt_discs = json.load(open('data/thrm_groundtruth_discs.json','r')) 
-yearwise_precs = [np.isin(preds,thrm_discs[x]).sum()/len(preds) for x in range(2001,2019)]
+gt_discs = json.load(open("data/thrm_groundtruth_discs.json","r")) 
+yearwise_precs = [np.isin(preds,gt_discs[str(x)]).sum()/len(preds) for x in range(2001,2019)]
 np.cumsum(yearwise_precs)
 ```
