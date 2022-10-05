@@ -88,7 +88,7 @@ embed = embedding.dww2v(seqs_noauthor_path, workers=20)     # initiating deepwal
 embed.build_model()
 embed.train()
 ```
-Once the training is done, the word embedding model will be accessible through `embed.model`. We have also included a pretrained sample model for thermoelectricity among data files in `data/`. We, can load it into our embedding object: `embed.load(data/thrm_model_1996_2000)`.
+Once the training is done, the word embedding model will be accessible through `embed.model`. We have also included a pretrained sample model for thermoelectricity among data files in `data/`. We, can load it into our embedding object: `embed.load_model("data/thrm_model_1996_2000")`.
 
 
 ### Inferring Materials with the Targeted Property
