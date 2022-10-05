@@ -8,6 +8,8 @@ A few data files have been stored within `data/` to enable generating and evalua
 * `data/*_mats.txt`: list of candidate materials (e.g., chemical compounds or approved drugs)
 * `data/*_years.txt`: publication year of the articles included in our literature
 * `data/*_groundtruth_discs.json`: ground-truth discoveries made by scientists in reality, which are grouped by months (for COVID-19) and years (for thermoelectricity)
+    * For *Thermoelectricity*, the ground-truth discoveries are defined as materials that co-occurred with thermoelectricity keywords for the first time in the literature.
+    * For *COVID-19*, the ground-truth discoveries are defined as materials (drugs) that have been involved in at least one clinical trial downloaded from ClinicalTrials.gov (the copied ground-truth is based on the list of trials retrieved on August 5, 2021).
 * `data/*_model_*`: pre-trained word2vec sample model to be used for generating predictions
 
 ## An Example (Thermoelectricity)
