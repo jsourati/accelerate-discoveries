@@ -1,7 +1,18 @@
 # Expert-Aware Discovery Acceleration
 This package is implementation of an algorithm that incorporates distribution of experts and their experience for a better prediction of future scientific discoveries.
 
-## An Example
+## Data
+A few data files have been stored within `data/` to enable generating and evaluating discovery predictions for two example properties: thermoelectricity and COVID-19. Here's a brief description of the files:
+
+* `data/*_vertex_matrix.npz`: vertex matrix of the literature hypergraph
+* `data/*_mats.txt`: list of candidate materials (e.g., chemical compounds or approved drugs)
+* `data/*_years.txt`: publication year of the articles included in our literature
+* `data/*_groundtruth_discs.json`: ground-truth discoveries made by scientists in reality, which are grouped by months (for COVID-19) and years (for thermoelectricity)
+    * For *Thermoelectricity*, the ground-truth discoveries are defined as materials that co-occurred with thermoelectricity keywords for the first time in the literature.
+    * For *COVID-19*, the ground-truth discoveries are defined as materials (drugs) that have been involved in at least one clinical trial downloaded from ClinicalTrials.gov (the copied ground-truth is based on the list of trials retrieved on August 5, 2021).
+* `data/*_model_*`: pre-trained word2vec sample model to be used for generating predictions
+
+## An Example (Thermoelectricity)
 Data necessary for running our expert-aware discovery prediction algorithm on an example property, i.e., "thermoelectricity", is included in `data/`. 
 Here are the main steps:
 
@@ -79,10 +90,11 @@ embed = embedding.dww2v(seqs_noauthor_path, workers=20)     # initiating deepwal
 embed.build_model()
 embed.train()
 ```
-Once the training is done, the word embedding model will be accessible through `embed.model`.
+Once the training is done, the word embedding model will be accessible through `embed.model`. We have also included a pretrained sample model for thermoelectricity among data files in `data/`. We, can load it into our embedding object: `embed.load_model("data/thrm_model_1996_2000")`.
+
 
 ### Inferring Materials with the Targeted Property
-The trained word embedding models will be used to rank the candidate materials based on their similarity to the property (in this example, thermoelectricity). 
+The (pre)trained word embedding models will be used to rank the candidate materials based on their similarity to the property (in this example, thermoelectricity). 
 ```
 sims,_,reordered_mats = embed.similarities(['thermoelectric'], mats, return_nan=False)
 ```
@@ -90,7 +102,7 @@ sims,_,reordered_mats = embed.similarities(['thermoelectric'], mats, return_nan=
 **NOTE FOR ELECTROCHEMICAL PROPERTIES:** Above command computes similarity between *all* materials and the property. However, when working with electrochemical properties (e.g., thermoelectricity), first we have to discard materials that have been already co-occurred (i.e., studied) with the targeted property. For instance, for prediction year 2001, we'll have:
 ```
 full_R = sparse.load_npz("data/thrm_vertex_matrix.npz")
-subgraph_R = full_R[yrs<2000]
+subgraph_R = full_R[yrs<=2000]
 studied_mats = mats[np.asarray(np.sum(subgraph_R[:,h.nA:-1].multiply(subgraph_R[:,-1]), axis=0)>0)[0,:]]
 candidate_mats = mats[~np.isin(mats,studied_mats)]
 ```
@@ -100,5 +112,15 @@ The prediction will be done over these candidate materials:
 sims,_,reordered_mats = embed.similarities(['thermoelectric'], candidate_mats, return_nan=False)
 
 # reporting 50 materials with highest likelihood of being thermoelectric
-reordered_mats[np.argsort(-sims[0,:])][:50]
+preds = reordered_mats[np.argsort(-sims[0,:])][:50]
+```
+
+## Evaluating Inferred Materials
+The evaluation will be done based on the ground-truth discoveries saved as `data/thrm_groundtruth_discs.json`. For instance, we can compute the year-wise cumulative precision of the predicted materials as follows:
+```
+import json
+
+gt_discs = json.load(open("data/thrm_groundtruth_discs.json","r")) 
+yearwise_precs = [np.isin(preds,gt_discs[str(x)]).sum()/len(preds) for x in range(2001,2019)]
+np.cumsum(yearwise_precs)
 ```
