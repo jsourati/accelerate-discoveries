@@ -190,18 +190,18 @@ class hypergraph(object):
         # setting the initial node index    
         if start_inds is None:
             n = self.R.shape[1]
-            init_idx = np.random.randint(0,n,length) if rand_seed is None else \
-                np.random.RandomState(rand_seed).randint(0,n,length)
+            init_idx = np.random.randint(0,n,size) if rand_seed is None else \
+                np.random.RandomState(rand_seed).randint(0,n,size)
         elif isinstance(start_inds, (list,np.ndarray)):
             # randomly choose one of them
-            rand_idx = np.random.randint(0,len(start_inds),length) if rand_seed is None \
-                else np.random.RandomState(rand_seed).randint(0,len(start_inds),length)
+            rand_idx = np.random.randint(0,len(start_inds),size) if rand_seed is None \
+                else np.random.RandomState(rand_seed).randint(0,len(start_inds),size)
             init_idx = [start_inds[x] for x in rand_idx]
         elif np.isscalar(start_inds):
             if start_inds-int(start_inds) != 0:
                 raise ValueError("The starting index in a random walk should be " +\
                                  "a positive integer (not a float like {}).".format(start_inds))
-            init_idx = np.ones(length,dtype=int) * int(start_inds)
+            init_idx = np.ones(size,dtype=int) * int(start_inds)
                     
 
         # setting up the sampling distribution
