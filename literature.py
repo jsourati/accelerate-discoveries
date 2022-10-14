@@ -7,6 +7,7 @@ import logging
 import pymysql
 import numpy as np
 import networkx as nx
+from tqdm import tqdm
 from scipy import sparse
 from collections import deque
 from joblib import Parallel, delayed
@@ -127,38 +128,7 @@ class hypergraph(object):
             return self.props[idx-self.nA-self.nM]
         else:
             raise ValueError("Index {} is not in any expected interval.".format(idx))
-
-
-    def alpha_modify_dist(self, alpha, hotvec):
-        '''Modifying a uniform (sampling) distribution over nodes based on
-        our alpha-adjusted non-uniform weights
-
-        alpha = P(mats) / P(authors or props)
-
-        The input `hot_vec` is a one-hot vector that specifies the
-        nodes that could be sampled in the current sampling step.
-
-        Here it is assumed that `nA,nM,nP` are all non-zero (integer) values.
-        '''
-
-        if np.all(hotvec==0):
-            return hotvec
-
-        if alpha==np.inf:
-            hotvec[:self.nA] = 0
-        
-        sum_AP = np.sum(hotvec[:self.nA]) + np.sum(hotvec[self.nA+self.nM:])
-        sum_M = np.sum(hotvec[self.nA:self.nA+self.nM])
-
-        if sum_AP>0:
-            hotvec[:self.nA] = hotvec[:self.nA] / sum_AP
-            hotvec[self.nA+self.nM:] = hotvec[self.nA+self.nM:] / sum_AP
-        if sum_M>0:
-            hotvec[self.nA:self.nA+self.nM] = alpha*hotvec[self.nA:self.nA+self.nM] / sum_M
-        
-
-        return hotvec/np.sum(hotvec)
-
+    
     
     def random_walk(self,length,size,**kwargs):
         """Generating a sequence of random walks over the hypergraph
@@ -185,6 +155,7 @@ class hypergraph(object):
         nseq_file_path = kwargs.get('nseq_file_path',None)
         eseq_file_path = kwargs.get('eseq_file_path',None)
         rand_seed = kwargs.get('rand_seed',None)
+        workers = kwargs.get('workers', -1)
 
         
         # setting the initial node index    
@@ -202,16 +173,7 @@ class hypergraph(object):
                 raise ValueError("The starting index in a random walk should be " +\
                                  "a positive integer (not a float like {}).".format(start_inds))
             init_idx = np.ones(size,dtype=int) * int(start_inds)
-                    
-
-        # setting up the sampling distribution
-        if alpha is None:
-            # uniform sampling
-            f = None
-        elif np.isscalar(alpha):
-            # alpha-modified sampling
-            f = lambda data: self.alpha_modify_dist(alpha, data)
-
+            
             
         if rand_seed is None:
             rand_seeds = [None]*size
@@ -220,59 +182,83 @@ class hypergraph(object):
 
         Rcsr = self.Rcsr if hasattr(self,'Rcsr') else None
             
-        sents = []
-        eseqs_list = []
-        nlines=0
-        for i in range(size):
-            seq, eseq = random_walk_for_hypergraph(self.R,
-                                                   init_idx[i],
-                                                   length,
-                                                   lazy=False,
-                                                   node_weight_func=f,
-                                                   node2vec_q=node2vec_q,
-                                                   rand_seed=rand_seeds[i],
-                                                   Rcsr=Rcsr)
+        ''' Iteratively generate random walk sequences'''
+        if workers==-1:
             
-            eseqs_list += [' '.join([str(x) for x in eseq])]
+            nseqs = []
+            eseqs = []
+            nlines=0
+            
+            # sequential random-walk
+            for i in range(size):
+                nseq, eseq = random_walk_for_hypergraph(self,
+                                                        init_idx[i],
+                                                        length,
+                                                        lazy=False,
+                                                        alpha=alpha,
+                                                        node2vec_q=node2vec_q,
+                                                        rand_seed=rand_seeds[i])
 
-            # parsing the hyper nodes
-            toks = [self.idx_to_name(s) for s in seq]
-            sent = ' '.join(toks)
+                eseqs += [' '.join([str(x) for x in eseq])]
 
-            sents += [sent]
+                # parsing the hyper nodes
+                toks = [self.idx_to_name(s) for s in nseq]
+                nseq = ' '.join(toks)
+                nseqs += [nseq]
 
-            if not(i%500) and i>0:
-                if file_path is not None:
-                    with open(file_path, 'a') as tfile:
-                        tfile.write('\n'.join(sents[i-500:i])+'\n')
-                        nlines = i
-                if eseq_file_path:
-                    with open(eseq_file_path, 'a') as tfile:
-                        tfile.write('\n'.join(eseqs_list[i-500:i])+'\n')
-                        nlines = i
-                if logger is not None:
-                    logger.info('{} randm walks are saved'.format(i))
+                if not(i%500) and i>0:
+                    if nseq_file_path is not None:
+                        with open(nseq_file_path, 'a') as tfile:
+                            tfile.write('\n'.join(nseqs[i-500:i])+'\n')
+                            nlines = i
+                    if eseq_file_path:
+                        with open(eseq_file_path, 'a') as tfile:
+                            tfile.write('\n'.join(eseqs[i-500:i])+'\n')
+                            nlines = i
 
-        if nseq_file_path is not None:
-            with open(nseq_file_path, 'a') as f:
-                f.write('\n'.join(sents[nlines:])+'\n')
-        if eseq_file_path is not None:
-            with open(eseq_file_path, 'a') as f:
-                f.write('\n'.join(eseqs_list[nlines:])+'\n')
+            if nseq_file_path is not None:
+                with open(nseq_file_path, 'a') as f:
+                    f.write('\n'.join(nseqs[nlines:])+'\n')
+            if eseq_file_path is not None:
+                with open(eseq_file_path, 'a') as f:
+                    f.write('\n'.join(eseqs[nlines:])+'\n')
+                    
+        elif workers>0:
+            
+            # parallel random-walk sequence generation
+            tqdm_list = tqdm(range(size), position=0, leave=True)
+            with Parallel(n_jobs=workers, backend="multiprocessing") as parallel_processor:
+                res = parallel_processor(delayed(random_walk_for_hypergraph)(
+                    self,
+                    init_idx[i],
+                    length,
+                    lazy=False,
+                    alpha=alpha,
+                    node2vec_q=node2vec_q,
+                    rand_seed=rand_seeds[i]) for i in tqdm_list)
+            
+            nseqs, eseqs = list(zip(*res))
+            eseqs = [' '.join([str(x) for x in eseq]) for eseq in eseqs]
+            nseqs = [' '.join([self.idx_to_name(x) for x in nseq]) for nseq in nseqs]
 
+            if nseq_file_path is not None:
+                with open(nseq_file_path, 'w') as f:
+                    f.write('\n'.join(nseqs)+'\n')
+            if eseq_file_path is not None:
+                with open(eseq_file_path, 'w') as f:
+                    f.write('\n'.join(eseqs)+'\n')
 
-        return sents, eseqs_list
+        return nseqs, eseqs
 
     
 
-def random_walk_for_hypergraph(R,
+def random_walk_for_hypergraph(h,
                                start_idx,
                                length,
                                lazy=True,
-                               node_weight_func=None,
+                               alpha=None,
                                node2vec_q=None,
-                               rand_seed=None,
-                               Rcsr=None):
+                               rand_seed=None):
     """Generating a random walk with a specific length and from 
     a starting point 
 
@@ -283,37 +269,47 @@ def random_walk_for_hypergraph(R,
     seq = [start_idx]       # set of hyper-nodes
     eseq = []               # set of hyper-edges
 
-    if not(lazy) and (np.sum(R[:,start_idx])==0):
+    if not(lazy) and (np.sum(h.R[:,start_idx])==0):
         print("Non-lazy random walk cannot start from an isolated vertex.")
         return None
 
     np.random.seed(rand_seed)
     randgen = np.random.sample
+    
+    if not hasattr(h, 'Rcsr'):
+        h.get_csr_mat()
 
+    # whether alpha-sampling is being used
+    if alpha is None:
+        # uniform sampling
+        node_weight_func = None
+    elif np.isscalar(alpha):
+        # alpha-modified sampling
+        def node_weight_func(data):
+            return alpha_modify_dist(alpha, data, h.nA, h.nM)
+    
+    # whether node2vec type of sampling is being used
     if node2vec_q is not None:
         q = node2vec_q
         prev_idx = None    # previous (hyper)node
-
-    if Rcsr is None:
-        Rcsr = R.tocsr()
 
     v = start_idx
     for i in range(length-1):
 
         '''selecting edge e'''
         if node2vec_q is not None:
-            e = node2vec_sample_edge(R, v, prev_idx, q, randgen)
+            e = node2vec_sample_edge(h.R, v, prev_idx, q, randgen)
             prev_idx = v   # update previous node
         else:
-            v_edges = R[:,v].indices
-            edge_weights = R[:,v].data   # this is an np.array
+            v_edges = h.R[:,v].indices
+            edge_weights = h.R[:,v].data   # this is an np.array
             eind = (edge_weights/edge_weights.sum()).cumsum().searchsorted(randgen())
             e = v_edges[eind]
 
         eseq += [e]
 
         '''selecting a node inside e'''
-        row = np.float32(np.squeeze(Rcsr[e,:].toarray()))
+        row = np.float32(np.squeeze(h.Rcsr[e,:].toarray()))
 
         if not(lazy):
             row[v]=0
@@ -382,6 +378,37 @@ def compute_multistep_transprob(P, source_inds, dest_inds, **kwargs):
         for t in range(1,nstep-2):
             left_mat = left_mat * interm_subP
         return left_mat * dest_subP[interm_inds,:]
+
+    
+def alpha_modify_dist(alpha, hotvec, nA, nM):
+    '''Modifying a uniform (sampling) distribution over nodes based on
+    our alpha-adjusted non-uniform weights
+
+    alpha = P(mats) / P(authors or props)
+
+    The input `hot_vec` is a one-hot vector that specifies the
+    nodes that could be sampled in the current sampling step.
+
+    Here it is assumed that `nA,nM,nP` are all non-zero (integer) values.
+    '''
+
+    if np.all(hotvec==0):
+        return hotvec
+
+    if alpha==np.inf:
+        hotvec[:nA] = 0
+
+    sum_AP = np.sum(hotvec[:nA]) + np.sum(hotvec[nA+nM:])
+    sum_M = np.sum(hotvec[nA:nA+nM])
+
+    if sum_AP>0:
+        hotvec[:nA] = hotvec[:nA] / sum_AP
+        hotvec[nA+nM:] = hotvec[nA+nM:] / sum_AP
+    if sum_M>0:
+        hotvec[nA:nA+nM] = alpha*hotvec[nA:nA+nM] / sum_M
+
+
+    return hotvec/np.sum(hotvec)
 
 
 def node2vec_sample_edge(R, curr_idx, prev_idx, q, randgen):
