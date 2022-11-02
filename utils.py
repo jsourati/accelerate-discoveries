@@ -29,6 +29,8 @@ def remove_authors_from_RW(seq):
         nsq = re.sub(patt2,"",nsq)
         newseq += [nsq]
 
+    newseq = [x for x in newseq if len(np.unique(x.split(' ')))>1]
+
     return newseq
 
 
