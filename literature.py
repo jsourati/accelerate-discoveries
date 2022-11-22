@@ -155,7 +155,7 @@ class hypergraph(object):
         nseq_file_path = kwargs.get('nseq_file_path',None)
         eseq_file_path = kwargs.get('eseq_file_path',None)
         rand_seed = kwargs.get('rand_seed',None)
-        workers = kwargs.get('workers', -1)
+        workers = kwargs.get('workers', 1)
 
         
         # setting the initial node index    
@@ -183,7 +183,7 @@ class hypergraph(object):
         Rcsr = self.Rcsr if hasattr(self,'Rcsr') else None
             
         ''' Iteratively generate random walk sequences'''
-        if workers==-1:
+        if workers==1:
             
             nseqs = []
             eseqs = []
@@ -223,7 +223,7 @@ class hypergraph(object):
                 with open(eseq_file_path, 'a') as f:
                     f.write('\n'.join(eseqs[nlines:])+'\n')
                     
-        elif workers>0:
+        elif workers>1:
             
             # parallel random-walk sequence generation
             tqdm_list = tqdm(range(size), position=0, leave=True)
