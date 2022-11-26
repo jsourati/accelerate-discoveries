@@ -16,7 +16,7 @@ from multiprocessing import Pool, cpu_count
 
 class hypergraph(object):
 
-    def __init__(self, R, mats, props, authors=None):
+    def __init__(self, R, mats, props, authornames=None):
         '''Make sure to feed the weight matrix in a format such that 
         the first batch of columns (nA) corresponds to authors, the second
         batch (nM) corresponds to the pool of materials and the third batch (nP)
@@ -29,14 +29,21 @@ class hypergraph(object):
         self.nM = len(mats)
         self.nP = len(props)
         self.nA = R.shape[1] - self.nM - self.nP
-        if authors is not None:
-            assert len(authors)==self.nA, "Number of author names should match " + \
+        if authornames is not None:
+            assert len(authornames)==self.nA, "Number of author names should match " + \
                 "the number of clumns in the node matrix."
+            if (np.isin(authornames, self.mats).sum() +
+                np.isin(authornames, self.props).sum()) > 0:
+                print('WARNING: there is an ambiguity in node naming.')
+            self.authornames = authornames
+        else:
+            self.authornames = np.array(['a_{}'.format(i) for i in range(self.nA)])
+
+        self.nodenames = np.concatenate([self.authornames, self.mats, self.props])
 
             
     def get_csr_mat(self):
         self.Rcsr = self.R.tocsr()
-
         
     def node_to_type(self,idx):
         if idx < self.nA:
@@ -46,8 +53,24 @@ class hypergraph(object):
         elif self.nA+self.nM <= idx < self.nA+self.nM+self.nP:
             return 'property'
         else:
-            raise ValueError('Index not in a valid range.')
-            
+            raise ValueError('Given node index not in a valid range.')
+
+    def node_to_name(self, idx):
+
+        if 0 <= idx < self.nA+self.nM+self.nP:
+            return self.nodenames[idx]
+        else:
+            raise ValueError('Given node index not in a valid range.')
+
+    def name_to_node(self, name):
+        if name in self.nodenames:
+            return np.where(self.nodenames==name)[0][0]
+        else:
+            return np.nan
+
+    def search_name(self, name):
+        return [x for x in self.nodenames if name in x]
+        
             
     def find_neighbors(self, idx, return_names=False):
         """Returning neighbors of a node indexed by `idx`
@@ -74,15 +97,41 @@ class hypergraph(object):
         nodes_inds = self.R[idx,:].nonzero()[1]
 
         if return_names:
-            return [self.idx_to_name(x) for x in nodes_inds]
+            names =  [self.node_to_name(x) for x in nodes_inds]
+            types = [self.node_to_type(x) for x in nodes_inds]
+            return {'authors': [self.node_to_name(x) for x in nodes_inds
+                               if self.node_to_type(x)=='author'],
+                    'materials': [self.node_to_name(x) for x in nodes_inds
+                                  if self.node_to_type(x)=='material'],
+                    'properties': [self.node_to_name(x) for x in nodes_inds
+                               if self.node_to_type(x)=='property']}
         else:
             return nodes_inds
 
         
-    def node_to_papers(self,idx):
+    def node_to_papers(self, node_identifiers):
         '''Returning all papers that include a given node
         '''
-        return self.R[:,idx].nonzero()[0]
+
+
+        # if multiple identifiers are given, papers that contain all the
+        # nodes are returned (intersection of inidividual papers)
+        if isinstance(node_identifiers, (list, tuple, np.ndarray)):
+            for i, idx_or_name in enumerate(node_identifiers):
+                if i==0:
+                    papers = self.node_to_papers(idx_or_name)
+                else:
+                    papers = papers[np.isin(papers,self.node_to_papers(idx_or_name))]
+                
+        else:
+            idx_or_name = node_identifiers
+            if isinstance(idx_or_name, str):
+                idx = self.name_to_node(idx_or_name)
+            else:
+                idx = idx_or_name
+            papers = self.R[:,idx].nonzero()[0]
+        
+        return papers
 
     def mat_to_papers(self,name):
         '''Returning all papers that include a given material identified
@@ -111,23 +160,6 @@ class hypergraph(object):
         #           prob.          prob.
         #      --------------   ------------
         return iDV * self.R.T * iDE * self.R
-
-
-    def idx_to_name(self, idx):
-        ''' Translating a node ID to a string indicating type of the node
-        based on the order of the columns in our vertex weight matrix
-        (e.g., node 150 --> the 150-th author, or material "CO2")
-        '''
-        
-
-        if idx < self.nA:
-            return 'a_{}'.format(idx)
-        elif self.nA <= idx < (self.nA+self.nM):
-            return self.mats[idx-self.nA]
-        elif (self.nA+self.nM) <= idx:
-            return self.props[idx-self.nA-self.nM]
-        else:
-            raise ValueError("Index {} is not in any expected interval.".format(idx))
     
     
     def random_walk(self,length,size,**kwargs):
@@ -202,7 +234,7 @@ class hypergraph(object):
                 eseqs += [' '.join([str(x) for x in eseq])]
 
                 # parsing the hyper nodes
-                toks = [self.idx_to_name(s) for s in nseq]
+                toks = [self.node_to_name(s) for s in nseq]
                 nseq = ' '.join(toks)
                 nseqs += [nseq]
 
@@ -239,7 +271,7 @@ class hypergraph(object):
             
             nseqs, eseqs = list(zip(*res))
             eseqs = [' '.join([str(x) for x in eseq]) for eseq in eseqs]
-            nseqs = [' '.join([self.idx_to_name(x) for x in nseq]) for nseq in nseqs]
+            nseqs = [' '.join([self.node_to_name(x) for x in nseq]) for nseq in nseqs]
 
             if nseq_file_path is not None:
                 with open(nseq_file_path, 'w') as f:
