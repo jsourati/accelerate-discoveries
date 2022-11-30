@@ -72,7 +72,7 @@ class hypergraph(object):
         return [x for x in self.nodenames if name in x]
         
             
-    def find_neighbors(self, idx, return_names=False):
+    def find_neighbors(self, idx, return_names=False, category=None):
         """Returning neighbors of a node indexed by `idx`
 
         NOTE: input `idx` can be an array of indices
@@ -84,8 +84,19 @@ class hypergraph(object):
         he_inds = self.R[:,idx].nonzero()[0]
 
         nbrs = np.unique(self.R[he_inds,:].nonzero()[1])
+        
+        if category is not None:
+            if category=='author':
+                nbrs = nbrs[nbrs<self.nA]
+            elif category=='material':
+                nbrs = nbrs[(self.nA<=nbrs)&(nbrs<(self.nA+self.nM))]
+            elif category=='property':
+                nbrs = nbrs[(self.nA+self.nM)<=nbrs]
+            else:
+                print("Category not found, hence ignored..")
+
         if return_names:
-            return [self.idx_to_name(x) for x in nbrs]
+            return np.array([self.node_to_name(x) for x in nbrs])
         else:
             return nbrs
 
