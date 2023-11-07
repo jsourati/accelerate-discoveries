@@ -25,7 +25,7 @@ import numpy as np
 import literature
 
 R = sparse.load_npz("data/thrm_vertex_matrix.npz")
-mats = np.array(open("data/thrm_mats.txt", "r").read().splitlines)
+mats = np.array(open("data/thrm_mats.txt", "r").read().splitlines())
 props = ["thermoelectric"]
 ```
 We have also included a file that includes publication year of the papers that we considered in our vertex matrix, which can be used to limit our focus to 
