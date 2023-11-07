@@ -91,6 +91,8 @@ Now, we are ready to build our word embedding model. The default parameters are 
 ```
 seqs_noauthor_path = "rw_seqs_noauthors.txt"
 
+import embedding
+
 embed = embedding.dww2v(seqs_noauthor_path, workers=20)     # initiating deepwalk model with a different value for parameter workers
 embed.build_model()
 embed.train()
