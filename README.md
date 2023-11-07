@@ -79,7 +79,7 @@ import utils
 
 with open("rw_seqs.txt", "w") as file:
     for i in range(100):
-        rw_seqs = h.random_walk(length, size, start_inds=prop_ind, alpha=1, rand_seed=i)[0][0]    # non-uniform sampling (alpha=1)
+        rw_seqs = h.random_walk(length, size, start_inds=prop_ind, alpha=2, rand_seed=i)[0][0]    # non-uniform sampling (alpha=1)
         file.write(rw_seqs+'\n')
 
 seqs = open("rw_seqs.txt").read().splitlines()                              # reading the sequences
