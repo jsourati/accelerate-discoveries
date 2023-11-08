@@ -25,7 +25,7 @@ import numpy as np
 import literature
 
 R = sparse.load_npz("data/thrm_vertex_matrix.npz")
-mats = np.array(open("data/thrm_mats.txt", "r").read().splitlines)
+mats = np.array(open("data/thrm_mats.txt", "r").read().splitlines())
 props = ["thermoelectric"]
 ```
 We have also included a file that includes publication year of the papers that we considered in our vertex matrix, which can be used to limit our focus to 
@@ -77,6 +77,11 @@ The sequences generated from the random walk process could then be used to train
 ```
 import utils 
 
+with open("rw_seqs.txt", "w") as file:
+    for i in range(100):
+        rw_seqs = h.random_walk(length, size, start_inds=prop_ind, alpha=2, rand_seed=i)[0][0]    # non-uniform sampling (alpha=1)
+        file.write(rw_seqs+'\n')
+
 seqs = open("rw_seqs.txt").read().splitlines()                              # reading the sequences
 seqs_noauthors = utils.remove_authors_from_RW(seqs)                         # removing the author nodes
 open("rw_seqs_noauthors.txt", "w").write("\n".join(seqs_noauthors)+"\n")    # saving the pruned sequences
@@ -85,6 +90,8 @@ open("rw_seqs_noauthors.txt", "w").write("\n".join(seqs_noauthors)+"\n")    # sa
 Now, we are ready to build our word embedding model. The default parameters are saved within file `default_params.json`. In order to use different values for these parameters, one can either change the values inside this file or input different values when initiating `embedding.dww2v`:
 ```
 seqs_noauthor_path = "rw_seqs_noauthors.txt"
+
+import embedding
 
 embed = embedding.dww2v(seqs_noauthor_path, workers=20)     # initiating deepwalk model with a different value for parameter workers
 embed.build_model()

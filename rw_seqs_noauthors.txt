@@ -1,0 +1,92 @@
+thermoelectric CeGePd CeGeNi Ce2Ge5Ni3 Ce3Ge4Ni4 CeGeNi CeGePd CeGePt GePdPr GePdSm GeNdPd GePdPr Ge4Pd4Yb3 PdSiY LaPtSi GeLaPt EuGePt CeCu2Hg2K IrLaSi
+thermoelectric Al33As100Ga67 Al33As100Ga67 AlAsGa AsFe2 GaGeMn GaGeMn
+thermoelectric CuIr2Se4 Nd2O3 Al2O3 Al2O3 O2Zr CsOV CsOV CsOV CsOV CsOV
+thermoelectric Ba2Ca2Cu3HgO8 Ba2Ca4Cu5HgO12 BaO2 CuNaO2 C50Ca239H300O580 CuNaO2 Ca239Cu300O580 CuNaO2 AlB2 Ag297Al253Pr50 AlNiZr NiSiTi
+thermoelectric La7Mn10O30Sr3 AlLaO3 O3SrTi Se2Ti CdSb TeZn
+thermoelectric Ca3La7Mn10O30 CuO2 Ca2Cl2CuO2 Ca2Cl2CuO2 Cl2CuO2Sr2
+thermoelectric Bi2Te3 Bi2Se3 BiSb3Te6 FeNi4
+thermoelectric CoSe4Ti2 FeTe20Ti10 FeTe20Ti10 FeTe20Ti10 CuO H3N
+thermoelectric Sb2Te3 Sb2Te3 Te3V2 AsGa GaP GaN GaN AlN InN
+thermoelectric thermoelectric NaNi4O12P3 KMn4O12P3 KNi4O12P3 KNi4O12P3 KMn4O12P3 CrLi LaNiO3
+thermoelectric O9P2V2 O7P2 Mg109O700P200 Na182Ni109O700P200 O5P2 O5V2 O3Yb2 CuO Cu2O ClCu BrCu CdS
+thermoelectric thermoelectric Bi4ITe7V thermoelectric FeHgSe FeHgSe HgSe GaSb InSb RuTe2 RuTe2
+thermoelectric Ba33La67Mn100O300 Eu7La60Mn100O300Sr33
+thermoelectric B2CNi2Y MgO MgO MgO MgO
+thermoelectric CuO2 Cr2O3 O2Ti H3N O2Si O2Si
+thermoelectric AsGa AsGa AsGaIn AsGa AsGa AsGa AsGaInP
+thermoelectric Cu2GdO8RuSr2 CrSbSe3 CrSbSe3
+thermoelectric CuFe2O4 Cu11Fe18GeO40 CuFe2O4 Cr2CuO4 B2O3 B2Zr B2Ta Al3Ti Al61Mn14Ti25 Al57Mn14Ti29 Al61Mn14Ti25 Al59Mn14Ti27 Al57Mn14Ti29
+thermoelectric thermoelectric FeSi SiV3 Cr3Si Cr5Si3 Ni3Si2 Cr3Si Al42H63Nb83 Al21Nb79 Cr3Si
+thermoelectric thermoelectric OPZn CoNaO4P thermoelectric CsO3P
+thermoelectric BCl3 B3C CH4 CuNiZn CuNiZn
+thermoelectric thermoelectric La7Mn10O30Sr3 CuLa2O4 KMnO4 ClK Cl2Mg Cl2Mg
+thermoelectric CePd2Si2 Cu2Si2Yb CePd2Si2 thermoelectric Si2Ti Si2Ti Fe2O3 N2O8U
+thermoelectric C2H4NO C2H4NO C2H4NO C2F3HNO C2H4NO C2F3HNO CH3 CH3 Na2O4S Na2O4S
+thermoelectric Ca3La7Mn10O30 Ca4Cu20Pb35Sr40Y16 CuI C2H3N O2Ti O3PbTiZr NTi NTi NTi N4Si3
+thermoelectric F6P AsF6 F6P F6P F6P AsF6 F6P AsF6
+thermoelectric FeGdO3 La2MgO6Rh La2O6RhZn La2MgO6Rh LaNi
+thermoelectric B2Ti O2Zr O3W In2O3 InO3P InO4P InO4P AsGa
+thermoelectric CrTe AsNi AsGa AsGa SeZn OZn Cr2O3 CrN NTi
+thermoelectric CSi BeO Li4O4Si Li4O4Si S2Si AlAsGa AsGa InP H2O BO4 BO3
+thermoelectric FeZr thermoelectric thermoelectric Ho3La11Mn20O60Sr6 Ho3La11Mn20O60Sr6
+thermoelectric Co67Fe33 thermoelectric I3Sb BiI3 BiI6 IRb BiI3 BrK ClK H2O4S ClH ClH B4C
+thermoelectric Al3La10Ni47 CoMn6Ni11TiV2Zr9 CoMn6Ni11TiV2Zr9
+thermoelectric CO3Sr CO2 CH3NO2 CH3NO2 CO2 CeN3O9 C3CeO3 CeN3O9 CeCl3 AlCl3 AlCl3 AlCl3 Al3Ti
+thermoelectric OPb OPb S3Sb2 S3Sb2 Te3Tl2 FeS2 FeS2 MnO2
+thermoelectric O5V2 O5V2 Cr11O516V200 O5V2 O5V2 CZr CTi NiTi
+thermoelectric PbS PbS PbS PbS PbS O2Si N4Si3
+thermoelectric CePdSb AsCePd CePdSb CeRhSn LaNiSn CeNiSn CeNiSn CeNi CeNiSn CeGaPt CeGaPt NiSiTi GeIrTb Os2Si2Tb
+thermoelectric Al5CeNi2 Al5CeNi2 thermoelectric thermoelectric O2Si Bi2O9SrTa2 Ba80BiNd39O600Ta120Ti80
+thermoelectric thermoelectric Bi2Se3 BiSb3Te6 Sb2Te3 Sb2Se3 As2S3 OPb Bi2O3
+thermoelectric Fe2Si5 FeSi2 FeSi2 LiNbO3 LiNbO3 LiNbO3 GaN
+thermoelectric B2Ti AlSiTi SiTi Al3Ti Al2O3 Al3Nb AlNi3 AlNi3 AlNi3 H2O Ce2O3 H2O
+thermoelectric B6Sm AlLaO3 GaN GaInN GaN GaN CSi Al2O3 NiO NiO
+thermoelectric PbTe PbTe O32Te PbTe PbSe Ge20Pb133Sn247Te400 SnTe SnTe GeTe Ge2Sb2Te5 Ag8In14Sb55Te23 Ge2Sb2Te5
+thermoelectric C39Ti50 C13Ti50 C49Ti100 C39Ti50 Ga3U Ga3U Bi2U
+thermoelectric ClH CO2 CSi C4H12Si CSi CSi CH4 CH4 O3W BaO3Sn
+thermoelectric thermoelectric C2H O4RuSr2 O4Ru O4RuSr2 O4RuSr2
+thermoelectric CSi CSi CSi CSi CSi CSi Al2O3 B2Ti Cr2O3 O3Y2 CeO2
+thermoelectric CuO2 CuO2 NbSe3 S3Ta K3Mo10O30 K3Mo10O30 S3Ta
+thermoelectric thermoelectric thermoelectric thermoelectric FeSi2 Mg2Si Al2O3 Al2O3 Al2O3 O2Sn
+thermoelectric MgNi MgNi2 MgNi Mg67Ni33 Mg2Ni MgNi2
+thermoelectric AsGa GaP InP InP AsIn AsGa AlAsGa AsGa AsIn HgTeZn AsIn AsGa AlAsGa
+thermoelectric Cd2GeO4 Cd2O4Pb Cd2GeO4 Cd2GeO4 AgO3Sb Cd2O4Pb Cd2GeO4 Cd2GeO4 AgO3Sb Cd2GeO4 Cd2O4Pb
+thermoelectric CePt2Sn2 Al6Fe6Tb Al6ErFe6 Al6ErFe6 Al6Fe6Tb Al6ErFe6 Al6Fe6Tb Al6ErFe6
+thermoelectric thermoelectric GaS8V4 GaMo4S8 GaS8V4 GaMo4S8 AsGa GeSi AlAsGa Al3As10Ga7
+thermoelectric Al2O3 AlCrNi3 NiO Al2O3 N4Si3 N4Si3 GeSi3 H4Si H3Si
+thermoelectric thermoelectric HgSe AsGa AlAsGa
+thermoelectric thermoelectric F6LiP F6LiP F6LiP CoLiO2 LiNbO3
+thermoelectric In2O3 In2O3 In2O In2O ClNa ClNa ClK ClK BrK
+thermoelectric SbU Be13U O4RuSr2 O4RuSr2 O4RuSr2 O4RuSr2 O4RuSr2 Pt3U CeRu2Si2 AlCePd
+thermoelectric I3Sb Bi40Se3Te57 I3Sb Bi40Se3Te57 I3Sb NTi O2Si AsNP
+thermoelectric Al21Fe109La10 Fe13Nd6Sn Fe13Pr6 Fe13Pr6Sn O2Ti NTi
+thermoelectric Al21Fe4 Al7Mn2 Al7Mn2
+thermoelectric SeTl InSe2Tl SeTl PSe SeZn SeZn SeZn SeZn CdSeZn GaInN GaN
+thermoelectric GeV BP98 GeV GeV
+thermoelectric thermoelectric Ba2NaNb5O15 Ba2NaNb5O15 KO5PTi KTi K100O500P100Sn7Ti93
+thermoelectric thermoelectric Sb2Se3 As3S7 AsSe
+thermoelectric thermoelectric Ba2CuHgO4 Ba2Cu3O7Y Ba2Cu3O7Y BCErNi B2CNi2Yb BCNiYb B2CNi2Yb
+thermoelectric Li4Mn5O12 Li2O Li4O4Si Li4O4Si CSi CSi CSi
+thermoelectric S2Ti LiS2Ti S2Ti MoSe2 S2W O5P2 O5P2 O5P2 Al2O3 O42S O42S
+thermoelectric O2P CuFe2O4 thermoelectric GeSi GeSi GeSi GeSi GaN Cl3Ga H2O AlC3H9 O2Si CoF3K
+thermoelectric S2Ti ILi LiNO3 LiMn2O4 LiMn2O4 MgO AlN NTi NTi2
+thermoelectric B6P thermoelectric thermoelectric Cd9Te10Zn CdTe CdTe
+thermoelectric GaMo4Se4Te4 GaS8V4 GaMo4Se4Te4 GaS8V4 IrO4Sr2 O3Rh2 O3Rh2 MgO4Rh2 O3Rh2 CH4 BCl3 GaInN GaN
+thermoelectric K3Mo10O30 K3Mo10O30 S3Ta S3Ta AlInN
+thermoelectric CuNd2O4 SeZn SeZn Cd3Se20Zn17 CdSeZn SSeZn AsGa InP CdSeZn CdSeZn
+thermoelectric thermoelectric thermoelectric GeSi GeSi CSi499
+thermoelectric CdCr2S4 Cr2MnS4 CdCr2S4 Cr2FeS4 Cr4CuFeS8 F4K2Ni AlCaO4Y AlO6 AlO6 O4Si CmO
+thermoelectric thermoelectric AsGa Al7As20Ga13 Al8As25Ga17 AsGa
+thermoelectric CaCu2Fe16O27 thermoelectric LaPdSn CePdSn CeNiSn CeRhSb CeNiSn CePdSn InPt2U
+thermoelectric Fe2O3 Al3Nb AlNb2 AlNb2 FeNbP FePTi Fe2O3
+thermoelectric Mo3Te4 Mo3Se4
+thermoelectric thermoelectric FeNbO4 FeNbO4 CeO2 Gd2O3 O3Y2 GdMnO3 MnO3Y Cr2O3 C2Cr3 MoS2 Mo25S28
+thermoelectric Ga8Ge15Sr4 FeZn13 FeZn13 Fe2MgO4 Cr3La4MgO12 CrHO2 CoHO2
+thermoelectric thermoelectric O4RuSr2 Pt3U Ru2Si2U Pd2U Ru2U Ru2Si2U B6Sm
+thermoelectric thermoelectric MgO KNbO3 Al2O3 CoFeNi CoFeNi GaInP InP AlAsIn AsGaIn AlAsGa AsGa
+thermoelectric Bi8Ca5Pb2Sr10 Bi8Ca5Pb2Sr10 Bi8Ca5Pb2Sr10 thermoelectric AlAsGa AsGa AlGaInP AlGaInP AsGa
+thermoelectric BaCuOY BaCuOY BaCuNdO O3SrTi CeO2 Bi2O3 BaO CO2 H4NO4S H4NO4S H4NO4S ClH O2Si O2Si
+thermoelectric thermoelectric Ba2Cu3O7Y Ba2Cu3O7Y Ba2Cu3O7Y Bi2CaCu2O8Sr2
+thermoelectric thermoelectric Ni3S2 NiO4S Cl22Ni NiO4S AgNO3 AgNO3 CdHgTe
+thermoelectric O9Pr5 O89Pr50 O4TiZr O3Y2 O2Zr O2Zr Fe2O3
+thermoelectric thermoelectric thermoelectric Bi4O12Ti3 O6Ti KO5PTi
