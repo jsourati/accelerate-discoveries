@@ -25,7 +25,7 @@ import numpy as np
 import literature
 
 R = sparse.load_npz("data/thrm_vertex_matrix.npz")
-mats = np.array(open("data/thrm_mats.txt", "r").read().splitlines)
+mats = np.array(open("data/thrm_mats.txt", "r").read().splitlines())
 props = ["thermoelectric"]
 ```
 We have also included a file that includes publication year of the papers that we considered in our vertex matrix, which can be used to limit our focus to 
@@ -72,12 +72,14 @@ h.random_walk(length, size, start_inds=prop_ind, alpha=1, rand_seed=1)    # non-
 # 129996 129885 337769 337769 1066194 1357414'])
 ```
 
+You can directly save the resulting random-walk sequence to a file by setting the input argument `nseq_file_path="rw_seqs.txt"`.
+
 ### Training Word Embedding Model
 The sequences generated from the random walk process could then be used to train an embedding model over the graph's nodes (in a [deepwalk fashion](http://www.perozzi.net/publications/14_kdd_deepwalk.pdf)). However, we won't need the author nodes for the task of discovery prediction. Hence, before moving forward we prune our random-walk sequences by removing the author nodes and saving the resulting sequences into a new file:
 ```
 import utils 
 
-seqs = open("rw_seqs.txt").read().splitlines()                              # reading the sequences
+seqs = open("rw_seqs.txt").read().splitlines()                              # reading the sequences (saved above through h.random_walk)
 seqs_noauthors = utils.remove_authors_from_RW(seqs)                         # removing the author nodes
 open("rw_seqs_noauthors.txt", "w").write("\n".join(seqs_noauthors)+"\n")    # saving the pruned sequences
 ```
@@ -116,7 +118,7 @@ preds = reordered_mats[np.argsort(-sims[0,:])][:50]
 ```
 
 ## Evaluating Inferred Materials
-The evaluation will be done based on the ground-truth discoveries saved as `data/thrm_groundtruth_discs.json`. For instance, we can compute the year-wise cumulative precision of the predicted materials as follows:
+The evaluation will be done based on the ground-truth discoveries saved as `data/thrm_groundtruth_discs.json`. For instance, for the example given above, we can compute the year-wise cumulative precision of the predicted materials based on the ground-truth discoveries made in or after the prediction year (i.e., 2001):
 ```
 import json
 
